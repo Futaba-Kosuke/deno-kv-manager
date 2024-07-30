@@ -1,47 +1,6 @@
 import { serveDir } from "https://deno.land/std@0.223.0/http/file_server.ts";
 import { allDestroy, deleteTargetRows } from "./modules/delete.ts";
-
-const getRouter = async (
-  path: string,
-  request: Request,
-): Promise<Response | undefined> => {
-  switch (path) {
-    // データ取得
-    case "/values": {
-      return new Response(
-        JSON.stringify(
-          [
-            {
-              "key": ["school", "classroom", 1],
-              "value": { "grade": 1, "class": "A" },
-            },
-            {
-              "key": ["school", "classroom", 2],
-              "value": { "grade": 1, "class": "B" },
-            },
-            {
-              "key": ["school", "classroom", 3],
-              "value": { "grade": 2, "class": "A" },
-            },
-            {
-              "key": ["school", "student", 1],
-              "value": { "name": "田中", "classroom": 1 },
-            },
-            {
-              "key": ["school", "student", 2],
-              "value": { "name": "山田", "classroom": 2 },
-            },
-            {
-              "key": ["school", "student", 3],
-              "value": { "name": "じぐ太郎", "classroom": 2 },
-            },
-          ],
-        ),
-      );
-    }
-  }
-  return undefined;
-};
+import { getAll } from "./modules/put.ts";
 
 const postRouter = async (
   path: string,
@@ -61,6 +20,11 @@ const putRouter = async (
   request: Request,
 ): Promise<Response | undefined> => {
   switch (path) {
+    // データ取得
+    // リクエストボディが欲しいのでGETでなくPUT
+    case "/get_all": {
+      return await getAll(request);
+    }
     // データ更新
     case "/update": {
       return new Response();
