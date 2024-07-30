@@ -14,7 +14,8 @@ export const createNewRow = async (request: Request): Promise<Response> => {
   const existKeys: Deno.KvKey[] = [];
   for (const newRow of newRows) {
     // 既にデータが存在しないか確認
-    const exists: boolean = (await kv.get(newRow.key)) !== undefined;
+    console.log(await kv.get(newRow.key))
+    const exists: boolean = (await kv.get(newRow.key)).value !== null;
     if (exists) {
       existKeys.push(newRow.key);
       continue;
