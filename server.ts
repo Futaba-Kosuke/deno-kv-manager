@@ -56,13 +56,6 @@ Deno.serve(async (request) => {
   const pathname = new URL(request.url).pathname;
 
   switch (method) {
-    case "GET": {
-      const res = await getRouter(pathname, request);
-      if (res !== undefined) {
-        return res;
-      }
-      break;
-    }
     case "POST": {
       const res = await postRouter(pathname, request);
       if (res !== undefined) {
