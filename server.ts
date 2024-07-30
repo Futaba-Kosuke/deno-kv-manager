@@ -1,5 +1,5 @@
 import { serveDir } from "https://deno.land/std@0.223.0/http/file_server.ts";
-import { allDestroy } from "./modules/delete.ts";
+import { allDestroy, deleteTargetRows } from "./modules/delete.ts";
 
 const getRouter = async (
   path: string,
@@ -79,8 +79,8 @@ const deleteRouter = async (
       return await allDestroy(request);
     }
     // データ削除
-    case "/delete": {
-      return new Response();
+    case "/elements": {
+      return await deleteTargetRows(request);
     }
   }
   return undefined;
