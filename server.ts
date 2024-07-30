@@ -1,6 +1,7 @@
 import { serveDir } from "https://deno.land/std@0.223.0/http/file_server.ts";
 import { allDestroy, deleteTargetRows } from "./modules/delete.ts";
 import { getAll } from "./modules/put.ts";
+import { createNewRow } from "./modules/post.ts";
 
 const postRouter = async (
   path: string,
@@ -9,7 +10,7 @@ const postRouter = async (
   switch (path) {
     // データ挿入
     case "/new": {
-      return new Response();
+      return await createNewRow(request);
     }
   }
   return undefined;
