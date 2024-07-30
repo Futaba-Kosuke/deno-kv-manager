@@ -9,7 +9,7 @@ const postRouter = async (
 ): Promise<Response | undefined> => {
   switch (path) {
     // データ挿入
-    case "/new": {
+    case "/rows": {
       return await createNewRow(request);
     }
   }
@@ -27,7 +27,7 @@ const putRouter = async (
       return await getAll(request);
     }
     // データ更新
-    case "/update": {
+    case "/rows": {
       return await updateRows(request);
     }
   }
@@ -44,7 +44,7 @@ const deleteRouter = async (
       return await allDestroy(request);
     }
     // データ削除
-    case "/elements": {
+    case "/rows": {
       return await deleteTargetRows(request);
     }
   }
