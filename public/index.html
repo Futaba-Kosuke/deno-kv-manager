@@ -9,8 +9,8 @@
 </head>
 
 <body>
-  <input id="database-url" type="text" placeholder="Deno KV URL">
-  <input id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token">
+  <input id="database-url" type="text" placeholder="Deno KV URL" value="">
+  <input id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token" value="">
 
   <button onclick="getAll()">最新状態の取得</button>
   <button onclick="insertRows()">まとめて挿入</button>
@@ -28,4 +28,5 @@
     <tbody id="kv-rows">
     </tbody>
   </table>
+  <button onclick="addRowElement()">+</button>
 </body>
