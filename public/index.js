@@ -1,12 +1,28 @@
+/**
+ * データを全取得してhtmlに設置
+ * @returns なし
+ */
 const getAll = async () => {
   const url = getUrl();
   const token = getToken();
 
   const response = await fetchServer("PUT", "/get_all", { url, token });
 
-  console.log(await response.text());
+  const rows = await response.json();
 
-  return response;
+  // 要素内を空に
+  $("#kv-rows").empty();
+  // 要素内にデータ挿入
+  for (const row of rows) {
+    $("#kv-rows").append(`
+      <tr>
+        <td>${row["key"]}</td>
+        <td>${row["value"]}</td>
+      </tr>
+    `);
+  }
+
+  return;
 };
 
 const insertRows = async () => {

@@ -9,12 +9,23 @@
 </head>
 
 <body>
-  <button onclick="getAll()">取得</button>
-  <button onclick="insertRows()">作成</button>
-  <button onclick="updateRows()">更新</button>
-  <button onclick="deleteRows()">削除</button>
-  <button onclick="allDestroy()">全削除</button>
   <input id="database-url" type="text" placeholder="Deno KV URL">
-  <input id="deno-deploy-token" type="text" placeholder="Deno Deploy Access Token">
-  <h1>Hello World!</h1>
+  <input id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token">
+
+  <button onclick="getAll()">最新状態の取得</button>
+  <button onclick="insertRows()">まとめて挿入</button>
+  <button onclick="updateRows()">まとめて更新</button>
+  <button onclick="deleteRows()">まとめて削除</button>
+  <button onclick="allDestroy()">全削除</button>
+
+  <table>
+    <thead>
+      <tr>
+        <td>key</td>
+        <td>value</td>
+      </tr>
+    </thead>
+    <tbody id="kv-rows">
+    </tbody>
+  </table>
 </body>
