@@ -19,12 +19,12 @@ const getAll = async () => {
     const type = typeof (row["value"]);
 
     $("#kv-rows").append(`
-      <tr>
+      <tr class="exists-kv-row">
         <td><input class="is-target" type="checkbox"></td>
-        <td>${JSON.stringify(key)}</td>
-        <td>${type === "object" ? JSON.stringify(value) : value}</td>
+        <td><input class="kv-key" type="text" value='${JSON.stringify(key)}' disabled></td>
+        <td><input class="kv-value type="text" value='${type === "object" ? JSON.stringify(value) : value}'></td>
         <td>
-          <select>
+          <select class="kv-value-type">
             <option value="json" ${
       type === "object" ? "selected" : ""
     }>json</option>
@@ -53,10 +53,10 @@ const addRowElement = () => {
   rows.append(`
     <tr class="new-kv-row">
       <td><input class="is-target" type="checkbox" checked></td>
-      <td><input class="new-kv-key" type="text" value="[]"></td>
-      <td><input class="new-kv-value type="text"></td>
+      <td><input class="kv-key" type="text" value="[]"></td>
+      <td><input class="kv-value type="text"></td>
       <td>
-        <select class="new-kv-value-type">
+        <select class="kv-value-type">
           <option value="json">json</option>
           <option value="string">string</option>
           <option value="number">number</option>
@@ -79,17 +79,17 @@ const insertRows = async () => {
     const isTarget = $(element).find(".is-target").is(":checked");
 
     if (isTarget) {
-      const key = JSON.parse($(element).find(".new-kv-key").val());
+      const key = JSON.parse($(element).find(".kv-key").val());
       let value;
-      switch ($(element).find(".new-kv-value-type").val()) {
+      switch ($(element).find(".kv-value-type").val()) {
         case "string":
-          value = $(element).find(".new-kv-value").val();
+          value = $(element).find(".kv-value").val();
           break;
         case "number":
-          value = Number($(element).find(".new-kv-value").val());
+          value = Number($(element).find(".kv-value").val());
           break;
         case "json":
-          value = JSON.parse($(element).find(".new-kv-value").val());
+          value = JSON.parse($(element).find(".kv-value").val());
           break;
       }
       rows.push({ key, value });
@@ -100,10 +100,10 @@ const insertRows = async () => {
   await fetchServer("POST", "/rows", { url, token, rows });
 
   // 1秒待つ
-  sleep(1);
-
-  // 最新データを取得
-  await getAll();
+  await setTimeout(async () => {
+    // 最新データを取得
+    await getAll();
+  }, 1000);
 
   return;
 };
@@ -111,16 +111,37 @@ const insertRows = async () => {
 const updateRows = async () => {
   const url = getUrl();
   const token = getToken();
-  const rows = [
-    { "key": ["X", "B"], "value": Math.random() },
-    { "key": ["Z", "B"], "value": Math.random() },
-  ];
+  const rows = [];
 
-  const response = await fetchServer("PUT", "/rows", { url, token, rows });
+  $("#kv-rows .exists-kv-row").each((index, element) => {
+    const isTarget = $(element).find(".is-target").is(":checked");
 
-  console.log(await response.text());
+    if (isTarget) {
+      const key = JSON.parse($(element).find(".kv-key").val());
+      let value;
+      switch ($(element).find(".kv-value-type").val()) {
+        case "string":
+          value = $(element).find(".kv-value").val();
+          break;
+        case "number":
+          value = Number($(element).find(".kv-value").val());
+          break;
+        case "json":
+          value = JSON.parse($(element).find(".kv-value").val());
+          break;
+      }
+      rows.push({ key, value });
+    }
+  });
 
-  return response;
+  // データを更新
+  await fetchServer("PUT", "/rows", { url, token, rows });
+
+  // 1秒待つ
+  await setTimeout(async () => {
+    // 最新データを取得
+    await getAll();
+  }, 1000);
 };
 
 const deleteRows = async () => {
