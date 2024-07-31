@@ -22,7 +22,7 @@ const getAll = async () => {
       <tr class="exists-kv-row">
         <td><input class="is-target" type="checkbox"></td>
         <td><input class="kv-key" type="text" value='${JSON.stringify(key)}' disabled></td>
-        <td><input class="kv-value type="text" value='${type === "object" ? JSON.stringify(value) : value}'></td>
+        <td><textarea class="kv-value">${type === "object" ? JSON.stringify(value, null, 2) : value}</textarea></td>
         <td>
           <select class="kv-value-type">
             <option value="json" ${
@@ -54,7 +54,7 @@ const addRowElement = () => {
     <tr class="new-kv-row">
       <td><input class="is-target" type="checkbox" checked></td>
       <td><input class="kv-key" type="text" value="[]"></td>
-      <td><input class="kv-value type="text"></td>
+      <td><textarea class="kv-value">{}</textarea></td>
       <td>
         <select class="kv-value-type">
           <option value="json">json</option>
