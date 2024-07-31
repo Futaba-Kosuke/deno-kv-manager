@@ -174,7 +174,8 @@ const allDestroy = async () => {
 
   const response = await fetchServer("DELETE", "/all_destroy", { url, token });
 
-  console.log(await response.text());
+  // 要素内を空に
+  $("#kv-rows").empty();
 
   return response;
 };
