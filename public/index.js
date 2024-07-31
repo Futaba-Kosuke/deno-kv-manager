@@ -147,17 +147,25 @@ const updateRows = async () => {
 const deleteRows = async () => {
   const url = getUrl();
   const token = getToken();
-  const target_keys = [["Z", "B"]];
+  const target_keys = [];
 
-  const response = await fetchServer("DELETE", "rows", {
-    url,
-    token,
-    target_keys,
+  $("#kv-rows .exists-kv-row").each((index, element) => {
+    const isTarget = $(element).find(".is-target").is(":checked");
+
+    if (isTarget) {
+      const key = JSON.parse($(element).find(".kv-key").val());
+      target_keys.push(key);
+    }
   });
 
-  console.log(await response.text());
+  // データを更新
+  await fetchServer("DELETE", "/rows", { url, token, target_keys });
 
-  return response;
+  // 1秒待つ
+  await setTimeout(async () => {
+    // 最新データを取得
+    await getAll();
+  }, 1000);
 };
 
 const allDestroy = async () => {
