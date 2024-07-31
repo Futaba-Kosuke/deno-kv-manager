@@ -3,30 +3,41 @@
 
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
   <link rel="stylesheet" href="styles.css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="./index.js"></script>
 </head>
 
 <body>
-  <input id="database-url" type="text" placeholder="Deno KV URL" value="">
-  <input id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token" value="">
+  <div class="container">
+    <section class="section">
+      <div class="container">
+        <input class="input" id="database-url" type="text" placeholder="Deno KV URL" value="">
+        <input class="input" id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token" value="">     
+        <button class="button" onclick="getAll()">最新状態の取得</button>
+        <button class="button" onclick="insertRows()">まとめて挿入</button>
+        <button class="button" onclick="updateRows()">まとめて更新</button>
+        <button class="button" onclick="deleteRows()">まとめて削除</button>
+        <button class="button" onclick="allDestroy()">全削除</button>
 
-  <button onclick="getAll()">最新状態の取得</button>
-  <button onclick="insertRows()">まとめて挿入</button>
-  <button onclick="updateRows()">まとめて更新</button>
-  <button onclick="deleteRows()">まとめて削除</button>
-  <button onclick="allDestroy()">全削除</button>
-
-  <table>
-    <thead>
-      <tr>
-        <td>key</td>
-        <td>value</td>
-      </tr>
-    </thead>
-    <tbody id="kv-rows">
-    </tbody>
-  </table>
-  <button onclick="addRowElement()">+</button>
+        <div style="width: 100%;">
+        <table class="table" style="width: 100%;">
+          <thead>
+            <tr>
+              <th><abbr>更新対象</abbr></th>
+              <th><abbr>キー</abbr></th>
+              <th><abbr>バリュー</abbr></th>
+              <th><abbr>型</abbr></th>
+            </tr>
+          </thead>
+          <tbody id="kv-rows">
+          </tbody>
+        </table>
+        </div>
+      </div>
+      <button class="button" onclick="addRowElement()">+</button>
+    </section>
+  </div>
 </body>

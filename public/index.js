@@ -20,11 +20,11 @@ const getAll = async () => {
 
     $("#kv-rows").append(`
       <tr class="exists-kv-row">
-        <td><input class="is-target" type="checkbox"></td>
-        <td><input class="kv-key" type="text" value='${JSON.stringify(key)}' disabled></td>
-        <td><textarea class="kv-value">${type === "object" ? JSON.stringify(value, null, 2) : value}</textarea></td>
+        <td><input class="checkbox is-target" type="checkbox"></td>
+        <td><input class="input kv-key" type="text" value='${JSON.stringify(key)}' disabled></td>
+        <td><textarea class="textarea kv-value">${type === "object" ? JSON.stringify(value, null, 2) : value}</textarea></td>
         <td>
-          <select class="kv-value-type">
+          <select class="select kv-value-type">
             <option value="json" ${
       type === "object" ? "selected" : ""
     }>json</option>
@@ -51,12 +51,12 @@ const addRowElement = () => {
 
   const rowCount = rows.children().length;
   rows.append(`
-    <tr class="new-kv-row">
-      <td><input class="is-target" type="checkbox" checked></td>
-      <td><input class="kv-key" type="text" value="[]"></td>
-      <td><textarea class="kv-value">{}</textarea></td>
+    <tr class="tr new-kv-row">
+      <td><input class="checkbox is-target" type="checkbox" checked></td>
+      <td><input class="input kv-key" type="text" value="[]"></td>
+      <td><textarea class="textarea kv-value">{}</textarea></td>
       <td>
-        <select class="kv-value-type">
+        <select class="select kv-value-type">
           <option value="json">json</option>
           <option value="string">string</option>
           <option value="number">number</option>
