@@ -67,47 +67,8 @@ const addRowElement = () => {
 };
 
 /**
- * データの新規作成・及び最新データの取得
- * @returns なし
+ * データの更新
  */
-const insertRows = async () => {
-  const url = getUrl();
-  const token = getToken();
-  const rows = [];
-
-  $("#kv-rows .new-kv-row").each((index, element) => {
-    const isTarget = $(element).find(".is-target").is(":checked");
-
-    if (isTarget) {
-      const key = JSON.parse($(element).find(".kv-key").val());
-      let value;
-      switch ($(element).find(".kv-value-type").val()) {
-        case "string":
-          value = $(element).find(".kv-value").val();
-          break;
-        case "number":
-          value = Number($(element).find(".kv-value").val());
-          break;
-        case "json":
-          value = JSON.parse($(element).find(".kv-value").val());
-          break;
-      }
-      rows.push({ key, value });
-    }
-  });
-
-  // データを挿入
-  await fetchServer("POST", "/rows", { url, token, rows });
-
-  // 1秒待つ
-  await setTimeout(async () => {
-    // 最新データを取得
-    await getAll();
-  }, 1000);
-
-  return;
-};
-
 const updateRows = async () => {
   const url = getUrl();
   const token = getToken();
