@@ -16,8 +16,6 @@ const canDispatchChecker = () => {
   const url = getUrl();
   const token = getToken();
 
-  console.log(url, token);
-
   if (url.length > 0 && token.length > 0) {
     $(".dispatcher").each((index, element) => {
       $(element).removeAttr("disabled");
@@ -75,6 +73,16 @@ const getAll = async () => {
     `);
   }
 
+  $(".is-target").change(() => {
+    const checked = $(this).is(":checked")
+    console.log(checked)
+    if (checked) {
+      $(this).addClass("has-background-success-90");
+    } else {
+      $(this).removeClass("has-background-success-90");
+    }
+  })
+
   return;
 };
 
@@ -86,8 +94,8 @@ const addRowElement = () => {
 
   const rowCount = rows.children().length;
   rows.append(`
-    <tr class="tr new-kv-row">
-      <td><input class="checkbox is-target" type="checkbox" checked></td>
+    <tr class="new-kv-row has-background-primary-90">
+      <td><input class="checkbox is-target" type="checkbox" checked disabled></td>
       <td><input class="input kv-key" type="text" value="[]"></td>
       <td><textarea class="textarea kv-value">{}</textarea></td>
       <td>
@@ -167,6 +175,9 @@ const deleteRows = async () => {
 const allDestroy = async () => {
   const url = getUrl();
   const token = getToken();
+
+  if (!window.confirm("Deno KV内のデータがすべて削除されます。本当に実行しますか？")) {
+  }
 
   const response = await fetchServer("DELETE", "/all_destroy", { url, token });
 

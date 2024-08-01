@@ -37,7 +37,7 @@ const deleteRouter = async (
   return undefined;
 };
 
-Deno.serve(async (request) => {
+Deno.serve({ port: 8080 }, async (request) => {
   const method = request.method;
   const pathname = new URL(request.url).pathname;
 
