@@ -113,7 +113,7 @@ const updateRows = async () => {
   const token = getToken();
   const rows = [];
 
-  $("#kv-rows .exists-kv-row").each((index, element) => {
+  $("#kv-rows .new-kv-row, #kv-rows .exists-kv-row").each((index, element) => {
     const isTarget = $(element).find(".is-target").is(":checked");
 
     if (isTarget) {

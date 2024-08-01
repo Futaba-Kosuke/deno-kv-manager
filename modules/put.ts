@@ -35,26 +35,14 @@ export const updateRows = async (request: Request): Promise<Response> => {
   // Deno KVにアクセス
   const kv = await accessKv(dbUrl, accessToken);
 
-  const notExistKeys: Deno.KvKey[] = [];
   for (const targetRow of targetRows) {
-    // 既にデータが存在するか確認
-    const exists: boolean = (await kv.get(targetRow.key)).value !== null;
-    if (!exists) {
-      notExistKeys.push(targetRow.key);
-      continue;
-    }
-
-    // 既存データ更新
+    // データ更新
     kv.set(targetRow.key, targetRow.value);
   }
 
   return new Response(
     JSON.stringify({
-      "message": notExistKeys.length === 0
-        ? `データを更新しました`
-        : `${
-          notExistKeys.map((k) => `[${k}]`)
-        }は削除されたかデータが更新されていたため、更新できませんでした。ページを読み込み直してください`,
+      "message": `データを更新しました`
     }),
   );
 };
