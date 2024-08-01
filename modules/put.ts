@@ -42,7 +42,7 @@ export const updateRows = async (request: Request): Promise<Response> => {
 
   return new Response(
     JSON.stringify({
-      "message": `データを更新しました`
+      "message": `データを更新しました`,
     }),
   );
 };

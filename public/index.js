@@ -1,3 +1,34 @@
+window.onload = () => {
+  $("#database-url").change(() => {
+    canDispatchChecker();
+  });
+
+  $("#deno-deploy-token").change(() => {
+    canDispatchChecker();
+  });
+
+  setTimeout(() => {
+    canDispatchChecker();
+  }, 1000);
+};
+
+const canDispatchChecker = () => {
+  const url = getUrl();
+  const token = getToken();
+
+  console.log(url, token);
+
+  if (url.length > 0 && token.length > 0) {
+    $(".dispatcher").each((index, element) => {
+      $(element).removeAttr("disabled");
+    });
+  } else {
+    $(".dispatcher").each((index, element) => {
+      $(element).attr("disabled", "1");
+    });
+  }
+};
+
 /**
  * データを全取得してhtmlに設置
  * @returns なし
@@ -21,8 +52,12 @@ const getAll = async () => {
     $("#kv-rows").append(`
       <tr class="exists-kv-row">
         <td><input class="checkbox is-target" type="checkbox"></td>
-        <td><input class="input kv-key" type="text" value='${JSON.stringify(key)}' disabled></td>
-        <td><textarea class="textarea kv-value">${type === "object" ? JSON.stringify(value, null, 2) : value}</textarea></td>
+        <td><input class="input kv-key" type="text" value='${
+      JSON.stringify(key)
+    }' disabled></td>
+        <td><textarea class="textarea kv-value">${
+      type === "object" ? JSON.stringify(value, null, 2) : value
+    }</textarea></td>
         <td>
           <select class="select kv-value-type">
             <option value="json" ${
