@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
   <link rel="stylesheet" href="styles.css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -14,12 +15,40 @@
   <div class="container">
     <section class="section">
       <div class="container">
-        <input class="input" id="database-url" type="text" placeholder="Deno KV URL" value="">
-        <input class="input" id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token" value="">     
-        <button class="button" onclick="getAll()">最新状態の取得</button>
-        <button class="button is-success" onclick="updateRows()">まとめて更新</button>
-        <button class="button is-warning" onclick="deleteRows()">まとめて削除</button>
-        <button class="button is-danger" onclick="allDestroy()">全削除</button>
+        <nav  class="navbar is-fixed-bottom is-light">
+          <div class="navbar-start">
+            <div class="navbar-item">
+              <p class="control has-icons-left">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-link"></i>
+                </span>
+                <input class="input" id="database-url" type="text" placeholder="Deno KV URL" value="">
+              </p>
+            </div>
+            <div class="navbar-item">
+              <p class="control has-icons-left">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-key"></i>
+                </span>
+                <input class="input" id="deno-deploy-token" type="password" placeholder="Deno Deploy Access Token" value="">     
+              </p>
+            </div>
+          </div>
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <button class="button" onclick="getAll()">最新状態の取得</button>
+            </div>
+            <div class="navbar-item">
+              <button class="button is-success" onclick="updateRows()">指定行の更新</button>
+            </div>
+            <div class="navbar-item">
+              <button class="button is-warning" onclick="deleteRows()">指定行の削除</button>
+            </div>
+            <div class="navbar-item">
+              <button class="button is-danger" onclick="allDestroy()">全削除</button>
+            </div>
+          </div>
+        </nav>
 
         <div style="width: 100%;">
         <table class="table" style="width: 100%;">
