@@ -177,6 +177,7 @@ const allDestroy = async () => {
   const token = getToken();
 
   if (!window.confirm("Deno KV内のデータがすべて削除されます。本当に実行しますか？")) {
+    return
   }
 
   const response = await fetchServer("DELETE", "/all_destroy", { url, token });
