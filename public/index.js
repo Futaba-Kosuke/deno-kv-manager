@@ -209,6 +209,29 @@ const allDestroy = async () => {
   return response;
 };
 
+const filterRows = () => {
+  const keyword = $("#filter-keyword").val();
+  const displayingRows = keyword.trim("")
+    ? rows.filter((row) => {
+      const { key } = row.getData();
+      return key.some((oneKey) => typeof oneKey === "string"
+        ? String(oneKey).includes(keyword)
+        : String(oneKey) === String(keyword))
+    })
+    : rows;
+
+  $("#kv-rows").empty();
+
+  for (const row of displayingRows) {
+    const key = row["key"];
+    const value = row["value"];
+    const type = typeof (row["value"]);
+
+    const kvRow = new KvRow(key, value, type);
+    $("#kv-rows").append(kvRow.getElement());
+  }
+}
+
 /**
  * サーバーへのアクセス
  * @param {string} method GET, POST, PUT...
