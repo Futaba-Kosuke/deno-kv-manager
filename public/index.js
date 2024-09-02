@@ -1,3 +1,101 @@
+const rows = [];
+
+class KvRow {
+  constructor(key, value, type, isNew = false) {
+    this.key = key;
+    this.value = value;
+    this.type = type;
+    this.isNew = isNew;
+    this.element = this.createRowElement();
+    this.bindEvents();
+    if (this.isNew) console.log("new")
+  }
+
+  createRowElement() {
+    const row = document.createElement('tr');
+    row.className = 'kv-row';
+
+    const checkboxCell = document.createElement('td');
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.className = 'checkbox is-target';
+    checkboxCell.appendChild(checkbox);
+
+    const keyCell = document.createElement('td');
+    const keyInput = document.createElement('input');
+    keyInput.className = 'input kv-key';
+    keyInput.type = 'text';
+    keyInput.value = JSON.stringify(this.key);
+    if (!this.isNew) keyInput.disabled = true;
+    keyCell.appendChild(keyInput);
+
+    const valueCell = document.createElement('td');
+    const valueTextarea = document.createElement('textarea');
+    valueTextarea.className = 'textarea kv-value';
+    valueTextarea.value = this.type === 'object' ? JSON.stringify(this.value, null, 2) : String(this.value);
+    valueCell.appendChild(valueTextarea);
+
+    const typeCell = document.createElement('td');
+    const typeSelect = document.createElement('select');
+    typeSelect.className = 'select kv-value-type';
+    typeSelect.innerHTML = `
+      <option value="json" ${this.type === 'object' ? 'selected' : ''}>json</option>
+      <option value="string" ${this.type === 'string' ? 'selected' : ''}>string</option>
+      <option value="number" ${this.type === 'number' ? 'selected' : ''}>number</option>
+    `;
+    typeCell.appendChild(typeSelect);
+
+    row.appendChild(checkboxCell);
+    row.appendChild(keyCell);
+    row.appendChild(valueCell);
+    row.appendChild(typeCell);
+
+    return row;
+  }
+
+  bindEvents() {
+    const checkbox = this.element.querySelector('.is-target');
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        this.element.classList.add('has-background-success-90');
+      } else {
+        this.element.classList.remove('has-background-success-90');
+      }
+      console.log(`Checkbox checked: ${checkbox.checked}`);
+    });
+  }
+
+  getElement() {
+    return this.element;
+  }
+
+  isChecked() {
+    const checkbox = this.element.querySelector('.is-target');
+    return checkbox.checked;
+  }
+
+  getData() {
+    const key = JSON.parse(this.element.querySelector('.kv-key').value);
+    const valueTextarea = this.element.querySelector('.kv-value');
+    const typeSelect = this.element.querySelector('.kv-value-type');
+    let value;
+
+    switch (typeSelect.value) {
+      case 'string':
+        value = valueTextarea.value;
+        break;
+      case 'number':
+        value = Number(valueTextarea.value);
+        break;
+      case 'json':
+        value = JSON.parse(valueTextarea.value);
+        break;
+    }
+
+    return { key, value };
+  }
+}
+
 window.onload = () => {
   $("#database-url").change(() => {
     canDispatchChecker();
@@ -36,77 +134,29 @@ const getAll = async () => {
   const token = getToken();
 
   const response = await fetchServer("PUT", "/get_all", { url, token });
+  const rowsData = await response.json();
 
-  const rows = await response.json();
-
-  // 要素内を空に
   $("#kv-rows").empty();
-  // 要素内にデータ挿入
-  for (const row of rows) {
+  rows.length = 0;
+
+  for (const row of rowsData) {
     const key = row["key"];
     const value = row["value"];
     const type = typeof (row["value"]);
 
-    $("#kv-rows").append(`
-      <tr class="exists-kv-row">
-        <td><input class="checkbox is-target" type="checkbox"></td>
-        <td><input class="input kv-key" type="text" value='${
-      JSON.stringify(key)
-    }' disabled></td>
-        <td><textarea class="textarea kv-value">${
-      type === "object" ? JSON.stringify(value, null, 2) : value
-    }</textarea></td>
-        <td>
-          <select class="select kv-value-type">
-            <option value="json" ${
-      type === "object" ? "selected" : ""
-    }>json</option>
-            <option value="string" ${
-      type === "string" ? "selected" : ""
-    }>string</option>
-            <option value="number" ${
-      type === "number" ? "selected" : ""
-    }>number</option>
-          </select>
-        </td>
-      </tr>
-    `);
+    const kvRow = new KvRow(key, value, type);
+    rows.push(kvRow);
+    $("#kv-rows").append(kvRow.getElement());
   }
-
-  $(".is-target").change(() => {
-    const checked = $(this).is(":checked")
-    console.log(checked)
-    if (checked) {
-      $(this).addClass("has-background-success-90");
-    } else {
-      $(this).removeClass("has-background-success-90");
-    }
-  })
-
-  return;
 };
 
 /**
  * 新規行のHTML要素を追加
  */
 const addRowElement = () => {
-  const rows = $("#kv-rows");
-
-  const rowCount = rows.children().length;
-  rows.append(`
-    <tr class="new-kv-row has-background-primary-90">
-      <td><input class="checkbox is-target" type="checkbox" checked disabled></td>
-      <td><input class="input kv-key" type="text" value="[]"></td>
-      <td><textarea class="textarea kv-value">{}</textarea></td>
-      <td>
-        <select class="select kv-value-type">
-          <option value="json">json</option>
-          <option value="string">string</option>
-          <option value="number">number</option>
-        </select>
-      </td>
-    </tr>
-  `);
+  const kvRow = new KvRow([], {}, 'json', true);
+  rows.push(kvRow);
+  $("#kv-rows").append(kvRow.getElement())
 };
 
 /**
@@ -115,31 +165,10 @@ const addRowElement = () => {
 const updateRows = async () => {
   const url = getUrl();
   const token = getToken();
-  const rows = [];
 
-  $("#kv-rows .new-kv-row, #kv-rows .exists-kv-row").each((index, element) => {
-    const isTarget = $(element).find(".is-target").is(":checked");
+  const rowsData = rows.filter(row => row.isChecked()).map(row => row.getData());
 
-    if (isTarget) {
-      const key = JSON.parse($(element).find(".kv-key").val());
-      let value;
-      switch ($(element).find(".kv-value-type").val()) {
-        case "string":
-          value = $(element).find(".kv-value").val();
-          break;
-        case "number":
-          value = Number($(element).find(".kv-value").val());
-          break;
-        case "json":
-          value = JSON.parse($(element).find(".kv-value").val());
-          break;
-      }
-      rows.push({ key, value });
-    }
-  });
-
-  // データを更新
-  await fetchServer("PUT", "/rows", { url, token, rows });
+  await fetchServer("PUT", "/rows", { url, token, rows: rowsData });
 
   // 1秒待つ
   await setTimeout(async () => {
@@ -151,19 +180,10 @@ const updateRows = async () => {
 const deleteRows = async () => {
   const url = getUrl();
   const token = getToken();
-  const target_keys = [];
 
-  $("#kv-rows .exists-kv-row").each((index, element) => {
-    const isTarget = $(element).find(".is-target").is(":checked");
+  const target_keys = rows.filter(row => row.isChecked()).map(row => row.getData().key);
 
-    if (isTarget) {
-      const key = JSON.parse($(element).find(".kv-key").val());
-      target_keys.push(key);
-    }
-  });
-
-  // データを更新
-  await fetchServer("DELETE", "/rows", { url, token, target_keys });
+  await fetchServer('DELETE', '/rows', { url, token, target_keys });
 
   // 1秒待つ
   await setTimeout(async () => {
@@ -184,6 +204,7 @@ const allDestroy = async () => {
 
   // 要素内を空に
   $("#kv-rows").empty();
+  rows.length = 0;
 
   return response;
 };
