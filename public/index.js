@@ -20,6 +20,10 @@ class KvRow {
     checkbox.type = 'checkbox';
     checkbox.className = 'checkbox is-target';
     checkboxCell.appendChild(checkbox);
+    if (this.isNew) {
+      checkbox.checked = true;
+      row.classList.add("has-background-success-90")
+    }
 
     const keyCell = document.createElement('td');
     const keyInput = document.createElement('input');
@@ -61,7 +65,12 @@ class KvRow {
       } else {
         this.element.classList.remove('has-background-success-90');
       }
-      console.log(`Checkbox checked: ${checkbox.checked}`);
+    });
+
+    const valueArea = this.element.querySelector('.kv-value');
+    valueArea.addEventListener('input', () => {
+      checkbox.checked = true;
+      this.element.classList.add('has-background-success-90');
     });
   }
 
