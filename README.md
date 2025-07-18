@@ -22,7 +22,7 @@ cd deno-kv-manager
 
 ### 3. 起動
 ```sh
-deno run -A --unstable server.ts
+deno run -A --unstable-kv server.ts
 ```
 
 ### Tutorial
